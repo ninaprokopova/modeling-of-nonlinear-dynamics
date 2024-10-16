@@ -1,9 +1,9 @@
 import math
 
 from bifd import Bif_d
-from model import Model
+from Model import Model
 from data_writer import DataWriter
-from EigValueVectors import get_eigenvalues, get_eigenvectors
+from EigenValueVectors import get_eigenvalues, get_eigenvectors
 
 class StochasticSensitivityMatrixW:
     """

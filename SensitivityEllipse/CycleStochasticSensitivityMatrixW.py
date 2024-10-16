@@ -1,14 +1,16 @@
 import numpy as np
 
-from model import Model
-from model2 import Model2
-from SensitivityEllipse.JacobiMatrixF import JacobiMatrixF
+from Model import Model
 
 
 class CycleStochasticSensitivityMatrixW():
+    # Класс для нахождения матриц стохастической чувствительности цикла
+
     def __init__(self):
         pass
 
+    # w1, w2, w3 - элементы матрицы стохастической чувствительности W_1 = [[w1, w3], [w3, w2]]
+    # формулы для нахождения w1, w2, w3 получены в ВольфрамМатематика
     def w1(self, q1, q2, q3, b1, b2, b3, b4):
         """w1 находится из решения матричного уравнения W=BWB^T + Q, из предположения, что матрица Q - симметричная"""
         return -((q1 - b2 * b3 * q1 - b1 * b4 * q1 - (b4 ** 2) * q1 - b2 * b3 * (b4 ** 2) * q1 + b1 * (b4 ** 3) * q1 +
@@ -58,8 +60,7 @@ class CycleStochasticSensitivityMatrixW():
         return B
 
     def get_Q_matrix(self, model, jacobi_matrix_F_array):
-        """Возвращает матрицу Q = Qk + Fk*Q(k-1)*Fk^T + ... + Fk*...*F2*Q1*F2^T*...*Fk^T
-        Qk = [[1, 0], [0, 0]]"""
+        """Возвращает матрицу Q = Qk + Fk*Q(k-1)*Fk^T + ... + Fk*...*F2*Q1*F2^T*...*Fk^T"""
         length = len(jacobi_matrix_F_array)
         Q_array = model.get_Q_matrix() * length
 
@@ -78,84 +79,15 @@ class CycleStochasticSensitivityMatrixW():
             Q_array[0][1][1] += Q_array[i][1][1]
         return Q_array[0]
 
-
-def main_model2():
-    # построение W1 для тестового примерчика
-    MU = 2.7
-    SIGMA = 0.16
-    X_0, Y_0 = 0.59, 0.69
-    model = Model2(mu=MU, sigma=SIGMA)
-    w_cycle_getter = CycleStochasticSensitivityMatrixW()
-    x_cycle_arr, y_cycle_arr = w_cycle_getter.get_cycle(model, X_0, Y_0)
-    jacobi_matrix_F_getter = JacobiMatrixF()
-    jacobi_matrix_F_array = jacobi_matrix_F_getter.get_jacobi_matrix_F_array(model, x_cycle_arr, y_cycle_arr)
-
-    print(len(x_cycle_arr))
-    print('x =', x_cycle_arr[0])
-    print('y =', y_cycle_arr[0])
-    print('x_cycle_arr =', x_cycle_arr)
-    print('y_cycle_arr =', y_cycle_arr)
-    for i in range(len(jacobi_matrix_F_array)):
-        print(f'f[{i}] =', jacobi_matrix_F_array[i])
-
-    B = w_cycle_getter.get_B_matrix(jacobi_matrix_F_array)
-    print('B =', B)
-    Q = w_cycle_getter.get_Q_matrix(model, jacobi_matrix_F_array)
-    print('Q =', Q)
-    b1 = B[0][0]
-    b2 = B[0][1]
-    b3 = B[1][0]
-    b4 = B[1][1]
-    q1 = Q[0][0]
-    q2 = Q[1][1]
-    q3 = Q[0][1]
-    w1 = w_cycle_getter.w1(q1, q2, q3, b1, b2, b3, b4)
-    w2 = w_cycle_getter.w2(q1, q2, q3, b1, b2, b3, b4)
-    w3 = w_cycle_getter.w3(q1, q2, q3, b1, b2, b3, b4)
-    print(q1, q2, q3, b1, b2, b3, b4, sep=", ")
-    print('w1 =', w1)
-    print('w2 =', w2)
-    print('w3 =', w3)
-
-def main():
-    MU = 6.
-    I = 0.001
-    X_0, Y_0 = 0.0, 0.0
-    model = Model(_mu=MU, _I=I)
-    w_cycle_getter = CycleStochasticSensitivityMatrixW()
-    x_cycle_arr, y_cycle_arr = w_cycle_getter.get_cycle(model, X_0, Y_0)
-    jacobi_matrix_F_getter = JacobiMatrixF()
-    jacobi_matrix_F_array = jacobi_matrix_F_getter.get_jacobi_matrix_F_array(model, x_cycle_arr, y_cycle_arr)
-
-    print(len(x_cycle_arr))
-    print('x =', x_cycle_arr[0])
-    print('y =', y_cycle_arr[0])
-    print('x_cycle_arr =', x_cycle_arr)
-    print('y_cycle_arr =', y_cycle_arr)
-    for i in range(len(jacobi_matrix_F_array)):
-        print(f'f[{i}] =', jacobi_matrix_F_array[i])
-
-    B = w_cycle_getter.get_B_matrix(jacobi_matrix_F_array)
-    print('B =', B)
-    Q = w_cycle_getter.get_Q_matrix(model, jacobi_matrix_F_array)
-    print('Q =', Q)
-    b1 = B[0][0]
-    b2 = B[0][1]
-    b3 = B[1][0]
-    b4 = B[1][1]
-    q1 = Q[0][0]
-    q2 = Q[1][1]
-    q3 = Q[0][1]
-    w1 = w_cycle_getter.w1(q1, q2, q3, b1, b2, b3, b4)
-    w2 = w_cycle_getter.w2(q1, q2, q3, b1, b2, b3, b4)
-    w3 = w_cycle_getter.w3(q1, q2, q3, b1, b2, b3, b4)
-    print(q1, q2, q3, b1, b2, b3, b4, sep=", ")
-    print('w1 =', w1)
-    print('w2 =', w2)
-    print('w3 =', w3)
-
-
-
-if __name__ == '__main__':
-    main_model2()
-    #main()
+    def get_W_matrix(self, model: Model, previous_W_matrix: list[list[float]],
+                     x: float, y: float) -> list[list[float]]:
+        """ Возвращает матрицу стохастической чувствительности, которая вычисляется рекурсивно. Т.е. нужно знать
+        матрицу стохастической чувствительности предыдущего элемента"""
+        jacobi_matrix = model.get_Jacobi_matrix(x, y)
+        jacobi_matrix_transpose = np.transpose(jacobi_matrix)
+        q_matrix = model.get_Q_matrix()
+        # w_i = jacobi_m_(i-1) * w_(i-1) * jacobi_m_(i-1)^T + q_m
+        w_i_matrix = np.dot(jacobi_matrix, previous_W_matrix)
+        w_i_matrix = np.dot(w_i_matrix, jacobi_matrix_transpose)
+        w_i_matrix = np.add(w_i_matrix, q_matrix)
+        return w_i_matrix

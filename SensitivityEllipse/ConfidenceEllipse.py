@@ -3,9 +3,6 @@ import math
 import numpy as np
 
 from tqdm import tqdm
-from data_writer import DataWriter
-from EquilibriumStochasticSensitivityMatrixW import StochasticSensitivityMatrixW
-from EigValueVectors import get_eigenvalues, get_eigenvectors
 
 
 class ConfidenceEllipse:
@@ -90,30 +87,3 @@ class ConfidenceEllipse:
             yarr.append(y2)
         return xarr, yarr
 
-
-def main():
-    #   Данный код для равновесия x,y находит матрицу стохастической чувствительности W, её собственные числа,
-    #   собственные значения и строит доверительный эллипс
-    # доверительная вероятность
-    P = 0.995
-    Q_2 = -math.log(1 - P)
-    # интенсивность шума
-    EPS = 0.0002
-    # точка, для которой стоится эллипс
-    X_EQ = 0.001063
-    Y_EQ = 0.001063
-    # значения матрицы стохастической чувствительности
-    w1 = 1.007993557803417
-    w2 = 1.007993557803417
-    w3 = 0.08976331836818677
-    eta1, eta2 = get_eigenvalues(w1, w2, w3)
-    u1, u2 = get_eigenvectors(eta1, eta2, w1, w2, w3)
-    confidence_ellipse = ConfidenceEllipse(q_2=Q_2, eps=EPS, eta1=eta1, eta2=eta2, u1=u1, u2=u2, xeq=X_EQ, yeq=Y_EQ)
-    x_ellipse_arr, y_ellipse_arr = confidence_ellipse.get_confidence_ellipse()
-    writer = DataWriter()
-    path = f'../data/ellipse.txt'
-    writer.write_data(x_ellipse_arr, y_ellipse_arr, path)
-
-
-if __name__ == '__main__':
-    main()

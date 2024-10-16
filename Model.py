@@ -47,6 +47,10 @@ class Model:
         """Что такое матрица Q??? - матрица из уравнений всяких из статьи Льва Борисовича и Ирины Адольфовны"""
         return [[[1., 0.], [0., 0.]]]
 
+    def get_Jacobi_matrix(self, xi, yi):
+        return [[self.get_dfdx(xi, yi), self.get_dfdy(xi, yi)],
+                [self.get_dgdx(xi, yi), self.get_dgdy(xi, yi)]]
+
     def transition_process(self, x_start, y_start, iterations_n=1000):
         """
         Переходный процесс
