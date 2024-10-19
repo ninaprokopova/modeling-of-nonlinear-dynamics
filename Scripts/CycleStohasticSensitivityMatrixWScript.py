@@ -2,7 +2,7 @@ from Model import Model
 from Model2 import Model2
 from SensitivityEllipse.JacobiMatrixF import JacobiMatrixF
 from SensitivityEllipse.CycleStochasticSensitivityMatrixW import CycleStochasticSensitivityMatrixW
-from data_writer import DataWriter
+from DataWriter import DataWriter
 
 
 def main_model2():

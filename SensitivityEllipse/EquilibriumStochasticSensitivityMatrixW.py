@@ -2,7 +2,7 @@ import math
 
 from bifd import Bif_d
 from Model import Model
-from data_writer import DataWriter
+from DataWriter import DataWriter
 from EigenValueVectors import get_eigenvalues, get_eigenvectors
 
 class StochasticSensitivityMatrixW:
@@ -82,7 +82,7 @@ class StochasticSensitivityMatrixW:
             w3_arr.append(w3)
         return w3_arr
 
-
+# todo: вынести функции ниже в отдельные скрипты
 def main():
     #    Данный код находит значения матрицы стохастической чувствительности w1, w2, w3
     #    для диапазона значений параметра скорости роста mu

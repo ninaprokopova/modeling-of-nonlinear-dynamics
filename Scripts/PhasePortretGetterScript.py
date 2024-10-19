@@ -1,6 +1,6 @@
 from Model import Model
 from Model2 import Model2
-from data_writer import DataWriter
+from DataWriter import DataWriter
 
 
 def main():

@@ -2,7 +2,7 @@ import math
 
 from SensitivityEllipse.EigenValueVectors import get_eigenvalues, get_eigenvectors
 from SensitivityEllipse.ConfidenceEllipse import ConfidenceEllipse
-from data_writer import DataWriter
+from DataWriter import DataWriter
 
 
 def main():
