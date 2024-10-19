@@ -2,6 +2,7 @@ from Model import Model
 from Model2 import Model2
 from SensitivityEllipse.JacobiMatrixF import JacobiMatrixF
 from SensitivityEllipse.CycleStochasticSensitivityMatrixW import CycleStochasticSensitivityMatrixW
+from data_writer import DataWriter
 
 
 def main_model2():
@@ -54,9 +55,20 @@ def main_model2():
     print(f"w3 = {w_2[0][0][1]}")
 
 def main():
-    MU = 6.
-    I = 0.001
-    X_0, Y_0 = 0.0, 0.0
+    """
+    Скрипт находит матрицы стохастической чувствительности для циклов:
+    1. Находит цикл
+    2. Находит матрицы Якоби для элементов цикла
+    3. Находит матрицы B и Q todo: стоит сделать ссылку на теорию
+    4. Находит матрицу W_1
+    5. Находит матрицы W_2..W_n, где n - длина цикла
+    6. Записывает в файл точку и элементы матрицы W в формате (x y w1 w2 w3)
+    """
+
+    #  Параметры, которые нужно задать перед запуском скрипта
+    MU = 0.131
+    I = 0.00
+    X_0, Y_0 = 1.1, 1.1
     model = Model(_mu=MU, _I=I)
     w_cycle_getter = CycleStochasticSensitivityMatrixW()
     x_cycle_arr, y_cycle_arr = w_cycle_getter.get_cycle(model, X_0, Y_0)
@@ -89,6 +101,35 @@ def main():
     print(f"w1 = {w1}")
     print(f"w2 = {w2}")
     print(f"w3 = {w3}")
+
+    w_i = [[w1, w3], [w3, w2]]
+
+    x_arr = [x_cycle_arr[0]]
+    y_arr = [y_cycle_arr[0]]
+    w1_arr = [w1]
+    w2_arr = [w2]
+    w3_arr = [w3]
+    for i in range(len(x_cycle_arr) - 1):
+        x = x_cycle_arr[i]
+        y = y_cycle_arr[i]
+        w1, w2, w3 = w_cycle_getter.get_W_matrix(model, w_i, x, y)
+        print(f"{i+2} элемент цикла")
+        print("# Точка, для которой нужно построить эллипс, и её матрица стохастической чувствительности W")
+        print(f"X = {x_cycle_arr[i+1]}")
+        print(f"Y = {y_cycle_arr[i+1]}")
+        print(f"w1 = {w1}")
+        print(f"w2 = {w2}")
+        print(f"w3 = {w3}")
+        w_i = [[w1, w3], [w3, w2]]
+        x_arr.append(x_cycle_arr[i+1])
+        y_arr.append(y_cycle_arr[i+1])
+        w1_arr.append(w1)
+        w2_arr.append(w2)
+        w3_arr.append(w3)
+
+    data_writer = DataWriter()
+    data_writer.write_data_5arr(x_arr, y_arr, w1_arr, w2_arr, w3_arr, "..\data\w_cycle.txt")
+
 
 if __name__ == '__main__':
     #main_model2()

@@ -80,14 +80,13 @@ class CycleStochasticSensitivityMatrixW():
         return Q_array[0]
 
     def get_W_matrix(self, model: Model, previous_W_matrix: list[list[float]],
-                     x: float, y: float) -> list[list[float]]:
-        """ Возвращает матрицу стохастической чувствительности, которая вычисляется рекурсивно. Т.е. нужно знать
-        матрицу стохастической чувствительности предыдущего элемента"""
+                     x: float, y: float) -> (float, float, float):
+        """Возвращает элементы матрицы стохастической чувствительности w1, w2, w3. Матрица вычислется рекурсивно
+        по формуле: w_i = jacobi_m_(i-1) * w_(i-1) * jacobi_m_(i-1)^T + q_i"""
         jacobi_matrix = model.get_Jacobi_matrix(x, y)
         jacobi_matrix_transpose = np.transpose(jacobi_matrix)
         q_matrix = model.get_Q_matrix()
-        # w_i = jacobi_m_(i-1) * w_(i-1) * jacobi_m_(i-1)^T + q_m
         w_i_matrix = np.dot(jacobi_matrix, previous_W_matrix)
         w_i_matrix = np.dot(w_i_matrix, jacobi_matrix_transpose)
         w_i_matrix = np.add(w_i_matrix, q_matrix)
-        return w_i_matrix
+        return w_i_matrix[0][0][0], w_i_matrix[0][1][1], w_i_matrix[0][0][1]
