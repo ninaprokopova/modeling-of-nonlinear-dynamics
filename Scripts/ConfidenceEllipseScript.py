@@ -39,7 +39,7 @@ def main_many_ellipses():
     P = 0.995
     Q_2 = -math.log(1 - P)
     # интенсивность шума
-    EPS = 0.0005
+    EPS = 0.0016
 
     x_ellipses_arr = []
     y_ellipses_arr = []

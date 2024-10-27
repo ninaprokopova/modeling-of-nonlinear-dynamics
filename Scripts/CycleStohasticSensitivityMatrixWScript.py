@@ -69,7 +69,7 @@ def main():
     MU = 0.131
     I = 0.00
     X_0, Y_0 = 1.1, 1.1
-    model = Model(_mu=MU, _I=I)
+    model = Model(mu=MU, I=I)
     w_cycle_getter = CycleStochasticSensitivityMatrixW()
     x_cycle_arr, y_cycle_arr = w_cycle_getter.get_cycle(model, X_0, Y_0)
     jacobi_matrix_F_getter = JacobiMatrixF()
