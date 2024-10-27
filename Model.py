@@ -4,17 +4,17 @@ import random
 
 class Model:
 
-    def __init__(self, _alpha=1.5, _mu=None, _I=None, _eps=0):
+    def __init__(self, alpha=1.5, mu=None, I=None, eps=0):
         """
         Инициализация параметров модели
-        :param _alpha: _alpha > 0 определяет силу Олли эффекта
-        :param _mu: _mu > 0 характеризует скорость роста
-        :param _I: определяем иммиграцию 0<=I<=1
+        :param alpha: _alpha > 0 определяет силу Олли эффекта
+        :param mu: _mu > 0 характеризует скорость роста
+        :param I: определяем иммиграцию 0<=I<=1
         """
-        self.alpha = _alpha
-        self.mu = _mu
-        self.I = _I
-        self.eps = _eps
+        self.alpha = alpha
+        self.mu = mu
+        self.I = I
+        self.eps = eps
 
     def f(self, x, y):
         """Возвращает x_{t+1}=f(x_t, y_t)"""

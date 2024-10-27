@@ -1,22 +1,20 @@
 import math
 import numpy as np
-import Model
 
+from Model import Model
 from tqdm import tqdm
-from DataWriter import DataWriter
 
 
 class LyapunovExponent:
-    # todo сделать описание функций и типы
 
     def __init__(self):
         pass
 
-    def get_d(self, x, y):
+    def get_d(self, x: float, y: float) -> float:
         return math.sqrt(x ** 2 + y ** 2)
 
-    # todo нужно приложить ссылку на алгоритм
-    def get_main_lyapunov_exponent(self, model: Model.Model, x0, y0):
+    def get_main_lyapunov_exponent(self, model: Model, x0: float, y0: float) -> float:
+        """Алгоритм нахождения показателя Ляпунова находится в Theory/LyapunovExponentAlgorithm"""
         start_iterations_n = 10 ** 3
         x0, y0 = model.transition_process(x0, y0, start_iterations_n)
         # print('mu: ', model.mu, 'x0, y0: ', x0, y0)
@@ -47,7 +45,8 @@ class LyapunovExponent:
 
         return round(np.sum(ln_p_arr) / len(ln_p_arr), 20)
 
-    def get_lyapunov_exponent_data(self, model, mu_start, mu_end, step, x0, y0, extend_attractor=False):
+    def get_lyapunov_exponent_data(self, model: Model, mu_start: float, mu_end: float, step: float,
+                                   x0: float, y0: float, extend_attractor: bool = False):
         lyapunov_exponent_arr = []
         mu_arr = []
 
@@ -78,21 +77,3 @@ class LyapunovExponent:
             lyapunov_exponent_arr.append(l)
             mu_arr.append(mu_)
         return mu_arr, lyapunov_exponent_arr
-
-
-# todo вынести код ниже в отдельный скрипт
-if __name__ == '__main__':
-    lyapunov_exp_getter = LyapunovExponent()
-    alpha = 1.5
-    I = 0.00
-    model = Model.Model(_alpha=alpha, _mu=None, _I=I)
-    mu_start, mu_end, step = 0.13017, 0.13023, 0.000001
-    x0, y0 = 1.1, 1.1
-    mu_arr, lyapunov_exponent_arr = lyapunov_exp_getter.get_lyapunov_exponent_data(model, mu_start, mu_end, step, x0, y0,
-                                                                                   extend_attractor=False)
-    data_writer = DataWriter()
-    data_writer.write_data(mu_arr, lyapunov_exponent_arr, 'data/lp.txt')
-
-    # model.mu = 2.5949
-    # x0, y0 = 1.1, 1.1
-    # print('lp1: ', lyapunov_p.get_main_lyapunov_exponent(model, x0, y0))
